@@ -5,12 +5,11 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-# Build the Spring Boot project (skip tests for faster build)
+# Build the project inside Docker
 RUN mvn clean install -DskipTests
 
 # Run stage: only JDK
 FROM eclipse-temurin:17-jdk-alpine
-
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
