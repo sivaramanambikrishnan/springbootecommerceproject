@@ -1,13 +1,14 @@
-# Build stage (Maven + JDK)
+# Build stage: Maven + JDK
 FROM maven:3.9.3-eclipse-temurin-17 AS build
 
 WORKDIR /app
-COPY . .
+COPY pom.xml .
+COPY src ./src
 
-# Build the Spring Boot project
+# Build the Spring Boot project (skip tests for faster build)
 RUN mvn clean install -DskipTests
 
-# Run stage (only JDK)
+# Run stage: only JDK
 FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app
