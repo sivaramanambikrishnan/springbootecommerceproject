@@ -1,22 +1,13 @@
-# Build stage
-FROM maven:3.9.3-eclipse-temurin-17 AS build
-WORKDIR /app
-
-# Copy only pom.xml first to leverage Docker cache
-COPY pom.xml .
-
-# Download dependencies (speeds up repeated builds)
-RUN mvn dependency:go-offline
-
-# Copy source code
-COPY src ./src
-
-# Build the project
-RUN mvn clean package -DskipTests
-
-# Run stage
+# Use lightweight JDK image
 FROM eclipse-temurin:17-jdk-alpine
+
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+
+# Copy the pre-built JAR
+COPY target/your-app.jar app.jar
+
+# Expose the port
 EXPOSE 8080
+
+# Run the Spring Boot app
 CMD ["java", "-jar", "app.jar"]
